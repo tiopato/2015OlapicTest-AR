@@ -6,27 +6,26 @@
  * There will be a Fake 2 overloaded constructors in order to make easier the location data loading
  **/
 
-class LocationData
-{
-	public $lat;
-	public $long;
-	public $country;
-	public $state;
-	public $place;
-	public $fclName;
-}
- 
 class MediaDB
 {
 	//Universal id
   	private $_id;
+	//Latitude
+	private $_lat;
+	//Longitude
+	private $_long;
+	//Country where is placed the MediaObject
+	private $_country;
+	//State where is placed the MediaObject
+	private $_state;
+	//Place Name where is placed the MediaObject
+	private $_place;
+	//Denominations of the place of the MediaObject
+	private $_fclName;
 	
-	//Geo information
-	private $_geoData;
-	private $_tags;
-	
+
     //Default constructor
-    public function __construct(){ $this->_geoData = new LocationData; }
+    public function __construct(){}
 	
 	//Pseudo Constructor with data
 	//returns a instance of an object filled with data
@@ -37,22 +36,44 @@ class MediaDB
 	}
 	
 	//Setters and Getters
-	//GeoData
-	public function setGeoData($lat, $long, $country, $state, $place, $fclname){
-	  $this->_geoData->lat = $lat;
-	  $this->_geoData->long = $long;
-	  $this->_geoData->country = $country;
-	  $this->_geoData->state = $state;
-	  $this->_geoData->place = $place;
-	  $this->_geoData->fclname = $fclname;
+
+	/* GeoData */
+	public function setGeoData($lat, $long, $country, $state, $place, $fclnames){
+		$this->setLat($lat);
+		$this->setLong($long);
+		$this->setCountry($country);
+		$this->setState($state);
+		$this->setPlace($place);
+		$this->setFclName($fclnames);
 	}
 	public function getGeoData(){ return $this->_geoData; }
 	
-	//Media Id
+	/* Media Id */
 	public function setId($id){ $this->_id = $id; }
 	public function getId(){ return $this->_id; }	
-	
-	//Media Tags
-	public function setTags($tags){ $this->_tags = $tags; }
-	public function getTags(){ return $this->tags; }	
+
+	/* Latitude */
+	public function setLat($lat){ $this->_lat = $lat; }
+	public function getLat(){ return $this->_lat; }	
+
+	/* Longitude */
+	public function setLong($long){ $this->_long = $long; }
+	public function getLong(){ return $this->_long; }	
+
+	/* Country */
+	public function setCountry($country){ $this->_country = $country; }
+	public function getCountry(){ return $this->_country; }	
+
+	/* State */
+	public function setState($state){ $this->_state = $state; }
+	public function getState(){ return $this->_state; }	
+
+	/* Name of the place */
+	public function setPlace($place){ $this->_place = $place; }
+	public function getPlace(){ return $this->_place; }	
+
+	/* fclName for the place */
+	public function setFclName($fclName){ $this->_fclName = $fclName; }
+	public function getFclName(){ return $this->_fclName; }	
+
 }

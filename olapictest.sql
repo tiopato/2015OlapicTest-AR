@@ -25,12 +25,12 @@ USE `olapictest`;
 CREATE TABLE `media_elements` (
   `id` VARCHAR(50) COLLATE latin1_spanish_ci NOT NULL,
   `timeout` DATETIME DEFAULT '0000-00-00 00:00:00',
-  `lat` DOUBLE(15,6) DEFAULT NULL,
-  `long` DOUBLE(15,6) DEFAULT NULL,
-  `contry` VARCHAR(80) COLLATE latin1_spanish_ci DEFAULT NULL,
+  `lat` DECIMAL(19,6) DEFAULT NULL,
+  `lng` DECIMAL(19,6) DEFAULT NULL,
+  `country` VARCHAR(80) COLLATE latin1_spanish_ci DEFAULT NULL,
   `state` VARCHAR(100) COLLATE latin1_spanish_ci DEFAULT NULL,
   `place` VARCHAR(255) COLLATE latin1_spanish_ci DEFAULT NULL,
-  `fclname` VARCHAR(100) COLLATE latin1_spanish_ci DEFAULT NULL,
+  `fclNames` VARCHAR(100) COLLATE latin1_spanish_ci DEFAULT NULL,
   PRIMARY KEY USING BTREE (`id`) COMMENT ''
 )ENGINE=InnoDB
 CHARACTER SET 'latin1' COLLATE 'latin1_spanish_ci'

@@ -12,19 +12,24 @@ class InstagramDBHandler
 	//Private DB Instance
 	private $_db;
 
+	
+	public function __construct(){
+		$this->_db = dbConn::getConnection();
+	}
+
 	//Look if the media is cached on DB
+	//Differents results are handled just in case is necessary in the future for clarify the behavior of the DB object
 	public function getMedia($id){
-      try{
-		$_db = dbConn::getConnection();
-        $rs = $_db->prepare('Select * from MEDIA_ELEMENTS where id ='.$id);		  
+      try
+	  {
+        $rs = $this->_db->prepare('Select * from MEDIA_ELEMENTS where id ='.$id);		  
 		$rs->execute();		  
 		if ($rs->rowCount() == 1){
 		  $row  = $rs->fetch();
 		  if ($row['timeout'] <= time()){ 
 		    //DB object is up to date
-		    $obj = MediaDB::newWithLocation($row['lat'],$row['long'],$row['country'],$row['state'],$row['place'],$row['fclName']);
-            $obj->setId($row['id']);
-            $obj->setTags($row['tags']);
+		    $obj = MediaDB::newWithLocation($row['lat'],$row['lng'],$row['country'],$row['state'],$row['place'],$row['fclNames']);
+			$obj->setId($row['id']);
             return $obj;
 		  }
 		  else { 
@@ -36,60 +41,65 @@ class InstagramDBHandler
 		} else {
   	      //the DB object doesn't exists
 		  $obj = new MediaDB;
-		  $obj->setId(1);
+		  $obj->setId(0);
 	      return  $obj; 
 		}
       } catch (Exception $e){
 		 //DB Error 
+		  //Whe must handle the exception here with some exception handling routine / pattern
         $obj = new MediaDB;
 		$obj->setId(-1);
 	    return  $obj; 
 	  }
 	}
-	/**
+	
+	/*
 	* Inserts media DB Object into database
-	* PARAMS ARRAY [id, timeout, lat, long, contry, state, place, fclname]
-	* Returns rowsaffected or -1 when error occurs
+	* PARAMS ARRAY [id, lat, lng, contry, state, place, fclname]
+	* Returns true when success, otherwise false 
 	*/
 	public function insertMedia($media){
-	  if ((is_array($media)) && (sizeof($media) = 8)){
-		if (! $this->DeleteMedia($media['id']))
-		  return -1;
-		try{
-  		  $_db = dbConn::getConnection();
-		  $sql = 'INSERT INTO media_elements(id, timeout, lat, long, contry, state, place, fclname) ';
-		  $sql .= 'VALUE (:id, :timeout, :lat, :long, :contry, :state, :place, :fclname) ';
-		  $rs = $_db->prepare($sql);
-		  $rs->bindParam(':id',$media['id'], PDO::PARAM_INT);
-		  $rs->bindParam(':timeout',$media['timeout'], PDO::PARAM_STR);
-		  $rs->bindParam(':lat',$media['lat'], PDO::PARAM_STR);
-		  $rs->bindParam(':long',$media['long'], PDO::PARAM_STR);
-		  $rs->bindParam(':contry',$media['contry'], PDO::PARAM_STR);
-		  $rs->bindParam(':state',$media['state'], PDO::PARAM_STR);
-		  $rs->bindParam(':place',$media['place'], PDO::PARAM_STR);
-		  $rs->bindParam(':fclname',$media['fclname'], PDO::PARAM_STR);
-		  return $rs->execute();
+	  //check for the parameters
+	  if ((is_array($media)) && (count($media) == 7)){ 
+		if (!$this->DeleteMedia($media['id']))
+		  return false;
+		try
+		{
+		  //We set the default expiration timeout arbitrarily in 1 day
+		  $statement = $this->_db->prepare("INSERT INTO media_elements(id, timeout, lat, lng, country, state, place, fclnames) 
+		  VALUES(:id,  ADDDATE(CURRENT_TIMESTAMP(), 1), :lat, :lng, :country, :state, :place, :fclnames)");
+		  $statement->execute(array("id" => $media['id'],
+		  		"lat" => $media['lat'],
+				"lng" => $media['lng'],
+				"country" => $media['country'],
+				"state" => $media['state'],
+				"place" => $media['place'],
+				"fclnames" => $media['fclnames']));
+		  return true;
 		}
 		catch (Exception $e){
-		  return -1;
+		  //Whe must handle the exception here with some exception handling routine / pattern
+		  return false;
 		}
 	  } else {
-		return 0; //param count not appropiated
+		return false; //param count not appropiated
 	  }
 	}
 	
-	/**
+	/*
 	* Delete media DB Object from database
 	* Returns True when success, otherwise False
 	*/
 	public function deleteMedia($id){
-	  try{
-  		$_db = dbConn::getConnection();
+	  try
+	  {
 		$sql = 'DELETE FROM media_elements WHERE id = :id ';
-		$rs = $_db->prepare($sql);
+		$rs = $this->_db->prepare($sql);
 		$rs->bindParam(':id',$id, PDO::PARAM_INT);
-		return ($rs->execute() > 0);
+		$rs->execute();
+		return true;
 	  }	catch (Exception $e){
+		  //Whe must handle the exception here with some exception handling routine / pattern
 		  return false;
 	  }
 	}
