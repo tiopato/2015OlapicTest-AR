@@ -1,79 +1,190 @@
 <?php
 /**
- * MediaDB class (this is an sample approach to use of a repository pattern.)
- * @author Ariel Gonzalo Romero
- * @since 2015-05-19
- * There will be a Fake 2 overloaded constructors in order to make easier the location data loading
- **/
+* MediaDB class (this is an sample approach to use of a repository pattern.)
+* @author Ariel Gonzalo Romero
+* @since 2015-05-19
+*/
+namespace olapictest;
 
 class MediaDB
 {
-	//Universal id
-  	private $_id;
-	//Latitude
-	private $_lat;
-	//Longitude
-	private $_long;
-	//Country where is placed the MediaObject
-	private $_country;
-	//State where is placed the MediaObject
-	private $_state;
-	//Place Name where is placed the MediaObject
-	private $_place;
-	//Denominations of the place of the MediaObject
-	private $_fclName;
+    //Universal id
+    private $id;
+    //Latitude
+    private $lat;
+    //Longitude
+    private $long;
+    //Country where is placed the MediaObject
+    private $country;
+    //State where is placed the MediaObject
+    private $state;
+    //Place Name where is placed the MediaObject
+    private $place;
+    //Denominations of the place of the MediaObject
+    private $fclName;
+
+    /**
+    * Default constructor
+    * @param string $lat
+    * @param string $long
+    * @param string $country
+    * @param string $state
+    * @param string $place
+    * @param string $fclname
+    */
+    public function __construct($lat, $long, $country, $state, $place, $fclname)
+    {
+        $this->setGeoData($lat, $long, $country, $state, $place, $fclname); 
+    }
 	
 
-    //Default constructor
-    public function __construct(){}
-	
-	//Pseudo Constructor with data
-	//returns a instance of an object filled with data
-	public static function newWithLocation($lat, $long, $country, $state, $place, $fclname){
-      $obj = new MediaDB(); 		
-	  $obj->setGeoData($lat, $long, $country, $state, $place, $fclname); 
-	  return $obj;
-	}
-	
-	//Setters and Getters
+    /**
+    * Getters & Setters
+    */
+    /**
+    * Setter for Geo Data.
+    * @param string $lat
+    * @param string $long
+    * @param string $country
+    * @param string $state
+    * @param string $place
+    * @param string $fclname
+    */
+    public function setGeoData($lat, $long, $country, $state, $place, $fclnames)
+    {
+        $this->setLat($lat);
+        $this->setLong($long);
+        $this->setCountry($country);
+        $this->setState($state);
+        $this->setPlace($place);
+        $this->setFclName($fclnames);
+    }
 
-	/* GeoData */
-	public function setGeoData($lat, $long, $country, $state, $place, $fclnames){
-		$this->setLat($lat);
-		$this->setLong($long);
-		$this->setCountry($country);
-		$this->setState($state);
-		$this->setPlace($place);
-		$this->setFclName($fclnames);
-	}
-	public function getGeoData(){ return $this->_geoData; }
-	
-	/* Media Id */
-	public function setId($id){ $this->_id = $id; }
-	public function getId(){ return $this->_id; }	
+    /** 
+    * Getter for Geo Data
+    * @return MediaDB object
+    */
+    public function getGeoData()
+    {
+        return $this->geoData;
+    }
 
-	/* Latitude */
-	public function setLat($lat){ $this->_lat = $lat; }
-	public function getLat(){ return $this->_lat; }	
+    /**
+    * Setter for id
+    * @param string $id
+    */
+    public function setId($id)
+    {
+        $this->_id = $id;
+    }
+    /**
+    * Getter for id
+    * @return string id
+    */
+    public function getId()
+    {
+        return $this->id;
+    }
 
-	/* Longitude */
-	public function setLong($long){ $this->_long = $long; }
-	public function getLong(){ return $this->_long; }	
+    /**
+    * Setter for Latitude
+    * @param string $lat
+    */
+    public function setLat($lat)
+    {
+        $this->lat = $lat;
+    }
+    /**
+    * Getter for Latitude
+    * @return lat
+    */
+    public function getLat()
+    {
+        return $this->lat;
+    }
 
-	/* Country */
-	public function setCountry($country){ $this->_country = $country; }
-	public function getCountry(){ return $this->_country; }	
+    /**
+    * Setter for Longitude
+    * @param string $long
+    */
+    public function setLong($long)
+    {
+        $this->long = $long;
+    }
+    /**
+    * Getter for Long
+    * @return long
+    */
+    public function getLong()
+    {
+        return $this->long;
+    }	
 
-	/* State */
-	public function setState($state){ $this->_state = $state; }
-	public function getState(){ return $this->_state; }	
+    /**
+    * Setter for Country
+    * @param string $country
+    */
+    public function setCountry($country)
+    {
+        $this->country = $country;
+    }
+    /**
+    * Getter for Country
+    * @return country
+    */
+    public function getCountry()
+    {
+        return $this->country;
+    }
 
-	/* Name of the place */
-	public function setPlace($place){ $this->_place = $place; }
-	public function getPlace(){ return $this->_place; }	
+    /**
+    * Setter for State
+    * @param string $state
+    */
+    public function setState($state)
+    {
+        $this->state = $state;
+    }
+    /**
+    * Getter for State
+    * @return state
+    */    
+    public function getState()
+    {
+        return $this->state;
+    }
 
-	/* fclName for the place */
-	public function setFclName($fclName){ $this->_fclName = $fclName; }
-	public function getFclName(){ return $this->_fclName; }	
+    /**
+    * Setter for the Real Name of Place
+    * @param string $place
+    */
+    public function setPlace($place)
+    {
+        $this->place = $place;
+    }
+    /**
+    * Getter for the Real Name of Place
+    * @return place
+    */
+    public function getPlace()
+    {
+        return $this->place;
+    }
 
+    /**
+    * Setter for fclName For the Place (Eg. City, Town, Village)
+    * @param $fclName
+    */
+    public function setFclName($fclName)
+    {
+        $this->_fclName=$fclName;
+    }
+    /**
+    * Getter for for fclName For the Place (
+    * @return fclName
+    */
+    public function getFclName()
+    {
+        return $this->fclName;
+    }
 }
